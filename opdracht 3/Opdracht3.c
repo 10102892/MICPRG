@@ -18,28 +18,24 @@ void lcd_status_update(void)
     switch(environment_status) {
     
         case 0x01:
-            lcd_cls();                                
- 
+            lcd_cls(); 
             lcd_puts("niets te doen");
 
             break;
         case 0x02:
-            lcd_cls();                                
-
+            lcd_cls();
             lcd_puts("opwarmen");
 
 
             break;
         case 0x03:
-            lcd_cls();                                
-  
+            lcd_cls(); 
             lcd_puts("koelen");
-
 
             break;
         default:
             /* mag niet voorkomen, alarm... */
-            PORTB=0xFF;
+            PORTB=0x00;
             break;
     }
 }
@@ -50,24 +46,24 @@ void heat_cool_update(void)
     
         case 0x01:
             // normal mode: P7 en p6 op 1 (0 op led is aan!);
-            PORTB|=0b11000000; 
+            PORTB |= 1<<PB7|1<<PB6; 
             break;
 
         case 0x02:
             // koelen: P6 op 0 p7 op 1.
-            PORTB&=0b10111111; 
-            PORTB|=0b10000000;
+            PORTB &= ~(1<<PB6); 
+            PORTB |= 1<<PB7;
             break;
 
         case 0x03:
             // verwarmen: p7 op 0 p6 op 1.
-            PORTB&=0b01111111;
-            PORTB|=0b01000000;
+            PORTB &= ~(1<<PB7);
+            PORTB |= 1<<PB6;
             break;
 
         default:
             /* mag niet voorkomen, alarm... */
-            PORTB=0xFF;
+            PORTB=0x00;
             break;
     }
 }
@@ -86,14 +82,14 @@ ISR(TIMER1_OVF_vect)
 
     // statusled
     if(led == 0x00) {
-        PORTB &= ~(1<<PB1);
+        PORTB &= ~(1<<PB5);
         led = 0x01;
 
 
     } else {
     
         led = 0x00;
-        PORTB |= 1<<PB1;
+        PORTB |= 1<<PB5;
     }
 }
 
@@ -120,8 +116,7 @@ void setup(void)
 
     // 2 - LEDJES - PORTB - LEDJES UIT
     DDRB=0xFF;
-    PORTB=0xFE;
-
+    PORTB=0xFF;
 
     // 3 - SENSORS
 
@@ -146,12 +141,9 @@ int main(void)
         // er veranderd iets..
         if(environment_status != 0x00) {
 
-            heat_cool_update();            
+            heat_cool_update();
 			lcd_status_update();
         
-			//lcd_cls();
-			//lcd_puts("hoi");
-
             // afgehandeld
             environment_status = 0x00;
         }
