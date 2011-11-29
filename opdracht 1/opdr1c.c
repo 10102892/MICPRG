@@ -3,6 +3,7 @@
 #include <util/delay.h>
 
 void wait(void) {
+
 	uint8_t i;
  	for (i=0; i<10; ++i)
 		_delay_ms(25);
