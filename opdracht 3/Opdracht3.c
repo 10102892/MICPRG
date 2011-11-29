@@ -26,7 +26,6 @@ void lcd_status_update(void)
             lcd_cls();
             lcd_puts("opwarmen");
 
-
             break;
         case 0x03:
             lcd_cls(); 
@@ -75,7 +74,8 @@ ISR(TIMER1_OVF_vect)
  	static uint8_t led=0x00, temp_status=0x01;
     uint8_t temperature=0x00;
     
-	environment_status= rand() % 3 + 1;
+	/* for testing, random environment */
+	// environment_status= rand() % 3 + 1;
 
     // reset counter
     TCNT1 = 61935;
@@ -84,7 +84,6 @@ ISR(TIMER1_OVF_vect)
     if(led == 0x00) {
         PORTB &= ~(1<<PB5);
         led = 0x01;
-
 
     } else {
     
@@ -107,7 +106,7 @@ void setup(void)
     TCCR1B &= ~(1<CS11);
     TCCR1B |= 1<<CS12|1<<CS10;
     
-    /* overflow na 900, dus 2^16-1 - 3600 > om de 250 ms een interrupt aanroep */
+    /* overflow na 3600, dus 2^16-1 - 3600 > om de s een interrupt aanroep */
     TCNT1 = 61935;
     
     // enable overflow
