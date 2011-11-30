@@ -67,14 +67,9 @@ void heat_cool_update(void)
     }
 }
 
-
-
 ISR(TIMER1_OVF_vect) 
 {
- 	static uint8_t led=0x00 count=60,
-
-	/* for testing, random environment */
-	// environment_status= rand() % 3 + 1;
+    static uint8_t led=0x00 count=60,
 
     // reset counter
     TCNT1 = 61935;
@@ -158,9 +153,8 @@ void setup(void)
     // normal mode: WGM11 en WGM10 op 0 in TCCR1A WGM12 en WGM13 op 0 in TCCRB;
     // TCCR1A &= ~(1<<WGM11|1<<WGM10); 
     // TCCR1B &= ~(1<<WGM13|1<<WGM12);
-	 
+     
     // prescaler 1024. CS12 1, CS11 0, CS10, 1
-
     TCCR1B &= ~(1<CS11);
     TCCR1B |= 1<<CS12|1<<CS10;
     
@@ -169,7 +163,6 @@ void setup(void)
     
     // enable overflow
     TIMSK|=1<<TOIE1;
-
 
     // 2 - LEDJES - PORTB - LEDJES UIT
     DDRB=0xFF;
@@ -180,27 +173,27 @@ void setup(void)
 
     // 4 - LCD
     lcd_init();
-	lcd_cls();
-	lcd_puts("Opstarten");
+    lcd_cls();
+    lcd_puts("Opstarten");
 
 }
 
 int main(void) 
 {
     // setup
-	setup();
+    setup();
 
-	// enable interrupts
-	sei();
+    // enable interrupts
+    sei();
 
     while (1) {
 
-	
+    
         // er veranderd iets..
         if(environment_status != 0x00) {
 
             heat_cool_update();
-			lcd_status_update();
+            lcd_status_update();
         
             // afgehandeld
             environment_status = 0x00;
