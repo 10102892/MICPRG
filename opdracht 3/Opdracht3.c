@@ -71,7 +71,7 @@ void heat_cool_update(void)
 
 ISR(TIMER1_OVF_vect) 
 {
- 	static uint8_t led=0x00,
+ 	static uint8_t led=0x00 count=60,
 
 	/* for testing, random environment */
 	// environment_status= rand() % 3 + 1;
@@ -90,9 +90,12 @@ ISR(TIMER1_OVF_vect)
         PORTB |= 1<<PB5;
     }
 
-    // start meting, meting klaar geeft interupt die afgehandeld wordt.
-    ADCSRA |= 1<<ADSC;
-
+    count--;
+    if (count == 0) {
+        // start meting, meting klaar geeft interupt die afgehandeld wordt.
+        ADCSRA |= 1<<ADSC;
+        count = 60;
+    }
 
 }
 
